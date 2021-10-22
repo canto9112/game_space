@@ -4,11 +4,15 @@ import random
 from animations.blink import blink
 from animations.fire import fire
 from animations.spaceship import animate_spaceship
+from animations.space_garbage import fly_garbage
+from toolkit.frames import get_garbage_frame
 
 TIC_TIMEOUT = 0.1
 STARS_AMOUNT = 25
 STARS_SYMBOLS = '+*.:'
 COROUTINES = []
+
+garbage_frame = get_garbage_frame('hubble.txt')
 
 
 def draw(canvas):
@@ -31,6 +35,9 @@ def draw(canvas):
 
     coorutine_spaceship = animate_spaceship(canvas, row_center, column_center, max_row, max_column)
     COROUTINES.append(coorutine_spaceship)
+
+    coroutine_garbage = fly_garbage(canvas, column=10, garbage_frame=garbage_frame)
+    COROUTINES.append(coroutine_garbage)
 
     while True:
         canvas.refresh()
