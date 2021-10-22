@@ -2,6 +2,7 @@ import asyncio
 import curses
 import random
 
+
 async def blink(canvas, row, column, symbol='*'):
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
