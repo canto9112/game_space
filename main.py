@@ -35,7 +35,7 @@ def draw(canvas):
     coroutine_fire = fire(canvas, row_center, column_center)
     COROUTINES.append(coroutine_fire)
 
-    coroutine_spaceship = animate_spaceship(canvas, row_center, column_center, max_row, max_column)
+    coroutine_spaceship = animate_spaceship(canvas, max_row, max_column)
     COROUTINES.append(coroutine_spaceship)
 
     COROUTINES.extend(fill_orbit_garbage(canvas, max_column) for _ in range(GARBAGE_AMOUNT))
