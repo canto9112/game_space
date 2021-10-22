@@ -1,8 +1,10 @@
-from toolkit.curses_tools import draw_frame
 import asyncio
-from toolkit.frames import get_garbage_frame
-import random
 import os
+import random
+
+from toolkit.curses_tools import draw_frame
+from toolkit.frames import get_garbage_frame
+from toolkit.sleep import sleep
 
 GARBAGE_DELAY = 50
 GARBAGE_DIRECTORY = 'frames/garbage/'
@@ -32,7 +34,6 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 
 async def fill_orbit_garbage(canvas, column):
     while True:
-        for _ in range(0, random.randint(0, GARBAGE_DELAY)):
-            await asyncio.sleep(0)
+        await sleep(random.randint(0, GARBAGE_DELAY))
         await get_random_garbage(canvas, column)
 
