@@ -1,15 +1,15 @@
 import curses
-import time
 import random
+import time
+
 from animations.blink import blink
 from animations.fire import fire
+from animations.space_garbage import fill_orbit_garbage
 from animations.spaceship import animate_spaceship
-from animations.space_garbage import fly_garbage, get_random_garbage, fill_orbit_garbage
 from toolkit.frames import get_garbage_frame
 
-
 TIC_TIMEOUT = 0.1
-STARS_AMOUNT = 25
+STARS_AMOUNT = 150
 STARS_SYMBOLS = '+*.:'
 COROUTINES = []
 GARBAGE_AMOUNT = 10
@@ -38,7 +38,6 @@ def draw(canvas):
     coroutine_spaceship = animate_spaceship(canvas, row_center, column_center, max_row, max_column)
     COROUTINES.append(coroutine_spaceship)
 
-    # coroutine_garbage = fly_garbage(canvas, random.randint(0, max_column), garbage_frame)
     COROUTINES.extend(fill_orbit_garbage(canvas, max_column) for _ in range(GARBAGE_AMOUNT))
 
     while True:
