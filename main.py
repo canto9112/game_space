@@ -28,14 +28,9 @@ def draw(canvas):
     COROUTINES.extend(
         blink(canvas, random.randint(0, max_row), random.randint(0, max_column), random.choice(STARS_SYMBOLS)) for _ in
         range(STARS_AMOUNT))
-
-    coroutine_fire = fire(canvas, row_center, column_center)
-    COROUTINES.append(coroutine_fire)
-
-    coroutine_spaceship = animate_spaceship(canvas, max_row, max_column, COROUTINES)
-    COROUTINES.append(coroutine_spaceship)
-
-    COROUTINES.extend(fill_orbit_garbage(canvas, max_column) for _ in range(GARBAGE_AMOUNT))
+    COROUTINES.append(animate_spaceship(canvas, max_row, max_column, COROUTINES))
+    COROUTINES.append(fire(canvas, row_center, column_center))
+    COROUTINES.extend(fill_orbit_garbage(canvas, max_column, COROUTINES) for _ in range(GARBAGE_AMOUNT))
 
     while True:
         canvas.refresh()

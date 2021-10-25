@@ -5,6 +5,7 @@ import random
 from toolkit.curses_tools import draw_frame
 from toolkit.frames import get_garbage_frame
 from toolkit.sleep import sleep
+from toolkit.obstacles import Obstacle, show_obstacles
 
 GARBAGE_DELAY = 50
 GARBAGE_DIRECTORY = 'frames/garbage/'
@@ -25,11 +26,11 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
         row += speed
 
 
-async def fill_orbit_garbage(canvas, max_column):
+async def fill_orbit_garbage(canvas, max_column, coroutines):
     while True:
         await sleep(random.randint(0, GARBAGE_DELAY))
         files = os.listdir(GARBAGE_DIRECTORY)
         garbage_frame = get_garbage_frame(random.choice(files))
         coroutine_garbage = fly_garbage(canvas, random.randint(0, max_column), garbage_frame)
-        await coroutine_garbage
-
+        coroutines.append(coroutine_garbage)
+        await sleep(2)

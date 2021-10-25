@@ -35,10 +35,3 @@ async def animate_spaceship(canvas, max_row, max_column, coroutines):
             coroutine_fire = fire(canvas, row, column)
             coroutines.append(coroutine_fire)
 
-
-
-
-
-
-
-
