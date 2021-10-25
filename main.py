@@ -30,10 +30,10 @@ def draw(canvas):
     COROUTINES.extend(
         blink(canvas, random.randint(0, max_row), random.randint(0, max_column), random.choice(STARS_SYMBOLS)) for _ in
         range(STARS_AMOUNT))
-    COROUTINES.append(animate_spaceship(canvas, max_row, max_column, COROUTINES))
-    COROUTINES.append(fire(canvas, row_center, column_center))
+    COROUTINES.append(animate_spaceship(canvas, max_row, max_column, COROUTINES, obstacles))
+    COROUTINES.append(fire(canvas, row_center, column_center, obstacles))
     COROUTINES.extend(fill_orbit_garbage(canvas, max_column, COROUTINES) for _ in range(GARBAGE_AMOUNT))
-    COROUTINES.append(show_obstacles(canvas, obstacles))
+    # COROUTINES.append(show_obstacles(canvas, obstacles))
 
     while True:
         canvas.refresh()

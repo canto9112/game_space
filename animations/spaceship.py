@@ -9,7 +9,7 @@ from animations.fire import fire
 SPACESHIP_FRAMES = get_frames('rocket')
 
 
-async def animate_spaceship(canvas, max_row, max_column, coroutines):
+async def animate_spaceship(canvas, max_row, max_column, coroutines, obstacles):
     frame_height, frame_width = get_frame_size(SPACESHIP_FRAMES[0])
     row = max_row // 2 - frame_height // 2
     column = max_column // 2 - frame_width // 2
@@ -32,6 +32,6 @@ async def animate_spaceship(canvas, max_row, max_column, coroutines):
             column = column + 1
 
         if space_pressed:
-            coroutine_fire = fire(canvas, row, column)
+            coroutine_fire = fire(canvas, row, column, obstacles)
             coroutines.append(coroutine_fire)
 
