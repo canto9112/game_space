@@ -10,13 +10,6 @@ GARBAGE_DELAY = 50
 GARBAGE_DIRECTORY = 'frames/garbage/'
 
 
-def get_random_garbage(canvas, max_column):
-    files = os.listdir(GARBAGE_DIRECTORY)
-    garbage_frame = get_garbage_frame(random.choice(files))
-    coroutine_garbage = fly_garbage(canvas, random.randint(0, max_column), garbage_frame)
-    return coroutine_garbage
-
-
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
     rows_number, columns_number = canvas.getmaxyx()
 
@@ -32,8 +25,11 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
         row += speed
 
 
-async def fill_orbit_garbage(canvas, column):
+async def fill_orbit_garbage(canvas, max_column):
     while True:
         await sleep(random.randint(0, GARBAGE_DELAY))
-        await get_random_garbage(canvas, column)
+        files = os.listdir(GARBAGE_DIRECTORY)
+        garbage_frame = get_garbage_frame(random.choice(files))
+        coroutine_garbage = fly_garbage(canvas, random.randint(0, max_column), garbage_frame)
+        await coroutine_garbage
 
