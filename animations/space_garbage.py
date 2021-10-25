@@ -2,13 +2,16 @@ import asyncio
 import os
 import random
 
-from toolkit.curses_tools import draw_frame
+from toolkit.curses_tools import draw_frame, get_frame_size
 from toolkit.frames import get_garbage_frame
+from toolkit.obstacles import Obstacle
 from toolkit.sleep import sleep
-from toolkit.obstacles import Obstacle, show_obstacles
 
 GARBAGE_DELAY = 50
 GARBAGE_DIRECTORY = 'frames/garbage/'
+
+obstacles = []
+obstacles_in_last_collisions = []
 
 
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
@@ -19,11 +22,24 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 
     row = 0
 
-    while row < rows_number:
-        draw_frame(canvas, row, column, garbage_frame)
-        await asyncio.sleep(0)
-        draw_frame(canvas, row, column, garbage_frame, negative=True)
-        row += speed
+    frame_row, frame_column = get_frame_size(garbage_frame)
+    obstacle = Obstacle(row, column, frame_row, frame_column)
+    obstacles.append(obstacle)
+
+    try:
+        while row < rows_number:
+            if obstacle in obstacles_in_last_collisions:
+                return
+            draw_frame(canvas, row, column, garbage_frame)
+            await asyncio.sleep(0)
+            draw_frame(canvas, row, column, garbage_frame, negative=True)
+            row += speed
+            obstacle.row = row
+
+    finally:
+        obstacles.remove(obstacle)
+        if len(obstacles_in_last_collisions) > 0:
+            obstacles_in_last_collisions.clear()
 
 
 async def fill_orbit_garbage(canvas, max_column, coroutines):

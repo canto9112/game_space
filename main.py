@@ -4,14 +4,16 @@ import time
 
 from animations.blink import blink
 from animations.fire import fire
-from animations.space_garbage import fill_orbit_garbage
+from animations.space_garbage import fill_orbit_garbage, obstacles
 from animations.spaceship import animate_spaceship
+from toolkit.obstacles import show_obstacles
+
 
 TIC_TIMEOUT = 0.1
 STARS_AMOUNT = 150
 STARS_SYMBOLS = '+*.:'
 COROUTINES = []
-GARBAGE_AMOUNT = 10
+GARBAGE_AMOUNT = 3
 
 
 def draw(canvas):
@@ -31,6 +33,7 @@ def draw(canvas):
     COROUTINES.append(animate_spaceship(canvas, max_row, max_column, COROUTINES))
     COROUTINES.append(fire(canvas, row_center, column_center))
     COROUTINES.extend(fill_orbit_garbage(canvas, max_column, COROUTINES) for _ in range(GARBAGE_AMOUNT))
+    COROUTINES.append(show_obstacles(canvas, obstacles))
 
     while True:
         canvas.refresh()
