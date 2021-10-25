@@ -5,8 +5,31 @@ from toolkit.curses_tools import read_controls, draw_frame, get_frame_size
 from toolkit.frames import get_frames
 from toolkit.physics import update_speed
 from animations.fire import fire
+from toolkit.sleep import sleep
+from animations.space_garbage import obstacles_in_last_collisions
 
 SPACESHIP_FRAMES = get_frames('rocket')
+
+GAMEOVER_FRAME = '''\
+
+ _______  _______  _______  _______    _______           _______  _______ 
+(  ____ \(  ___  )(       )(  ____ \  (  ___  )|\     /|(  ____ \(  ____ )
+| (    \/| (   ) || () () || (    \/  | (   ) || )   ( || (    \/| (    )|
+| |      | (___) || || || || (__      | |   | || |   | || (__    | (____)|
+| | ____ |  ___  || |(_)| ||  __)     | |   | |( (   ) )|  __)   |     __)
+| | \_  )| (   ) || |   | || (        | |   | | \ \_/ / | (      | (\ (   
+| (___) || )   ( || )   ( || (____/\  | (___) |  \   /  | (____/\| ) \ \__
+(_______)|/     \||/     \|(_______/  (_______)   \_/   (_______/|/   \__/
+                                                        
+'''
+
+
+async def show_gameover(canvas):
+    rows, columns = canvas.getmaxyx()
+    frame_rows, frame_columns = get_frame_size(GAMEOVER_FRAME)
+    while True:
+        draw_frame(canvas, (rows - frame_rows) / 2, (columns - frame_columns) / 2, GAMEOVER_FRAME)
+        await sleep(1)
 
 
 async def animate_spaceship(canvas, max_row, max_column, coroutines, obstacles):
@@ -20,6 +43,13 @@ async def animate_spaceship(canvas, max_row, max_column, coroutines, obstacles):
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
         draw_frame(canvas, row, column, frame, negative=True)
         row_speed, column_speed = update_speed(row_speed, column_speed, rows_direction, columns_direction)
+
+        for obstacle in obstacles:
+            if obstacle.has_collision(row, column, frame_height, frame_width):
+                obstacles_in_last_collisions.append(obstacle)
+                coroutines.append(show_gameover(canvas))
+                return
+
         row = row + rows_direction + row_speed
         if row == max_row - frame_height:
             row = row - 1
