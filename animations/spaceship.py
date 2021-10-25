@@ -2,33 +2,24 @@ import asyncio
 
 from itertools import cycle
 from toolkit.curses_tools import read_controls, draw_frame, get_frame_size
-from toolkit.frames import get_frames
+from toolkit.frames import get_frames, get_gameover_frame
 from toolkit.physics import update_speed
 from animations.fire import fire
 from toolkit.sleep import sleep
 from animations.space_garbage import obstacles_in_last_collisions
+import os
 
 SPACESHIP_FRAMES = get_frames('rocket')
-
-GAMEOVER_FRAME = '''\
-
- _______  _______  _______  _______    _______           _______  _______ 
-(  ____ \(  ___  )(       )(  ____ \  (  ___  )|\     /|(  ____ \(  ____ )
-| (    \/| (   ) || () () || (    \/  | (   ) || )   ( || (    \/| (    )|
-| |      | (___) || || || || (__      | |   | || |   | || (__    | (____)|
-| | ____ |  ___  || |(_)| ||  __)     | |   | |( (   ) )|  __)   |     __)
-| | \_  )| (   ) || |   | || (        | |   | | \ \_/ / | (      | (\ (   
-| (___) || )   ( || )   ( || (____/\  | (___) |  \   /  | (____/\| ) \ \__
-(_______)|/     \||/     \|(_______/  (_______)   \_/   (_______/|/   \__/
-                                                        
-'''
+GAMEOVER_DIRECTORY = 'frames/gameover/'
 
 
 async def show_gameover(canvas):
     rows, columns = canvas.getmaxyx()
-    frame_rows, frame_columns = get_frame_size(GAMEOVER_FRAME)
+    files = os.listdir(GAMEOVER_DIRECTORY)
+    garbage_frame = get_gameover_frame(files[0])
+    frame_rows, frame_columns = get_frame_size(garbage_frame)
     while True:
-        draw_frame(canvas, (rows - frame_rows) / 2, (columns - frame_columns) / 2, GAMEOVER_FRAME)
+        draw_frame(canvas, (rows - frame_rows) / 2, (columns - frame_columns) / 2, garbage_frame)
         await sleep(1)
 
 
