@@ -2,51 +2,42 @@ import asyncio
 import os
 import random
 
+from animations.explosion import explode
 from toolkit.curses_tools import draw_frame, get_frame_size
 from toolkit.frames import get_garbage_frame
+from toolkit.game_scenario import get_garbage_delay_tics
 from toolkit.obstacles import Obstacle
 from toolkit.sleep import sleep
 
-GARBAGE_DELAY = 50
+
 GARBAGE_DIRECTORY = 'frames/garbage/'
 
 obstacles = []
 obstacles_in_last_collisions = []
 
 
-async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
-    rows_number, columns_number = canvas.getmaxyx()
-
-    column = max(column, 0)
-    column = min(column, columns_number - 1)
-
+async def fly_garbage(canvas, column, frame, speed=0.5):
+    speed = max(speed, 0.1)
+    sprite_rows, sprite_columns = get_frame_size(frame)
     row = 0
-
-    frame_row, frame_column = get_frame_size(garbage_frame)
-    obstacle = Obstacle(row, column, frame_row, frame_column)
+    obstacle = Obstacle(row, column, sprite_rows, sprite_columns)
     obstacles.append(obstacle)
-
     try:
-        while row < rows_number:
-            if obstacle in obstacles_in_last_collisions:
-                return
-            draw_frame(canvas, row, column, garbage_frame)
+        rows, columns = canvas.getmaxyx()
+        max_row, max_column = rows - sprite_rows, columns - sprite_columns
+        column = max(column, 0)
+        column = min(column, max_column)
+        while row < max_row:
+            draw_frame(canvas, row, column, frame)
             await asyncio.sleep(0)
-            draw_frame(canvas, row, column, garbage_frame, negative=True)
+            draw_frame(canvas, row, column, frame, negative=True)
+            if obstacle in obstacles_in_last_collisions:
+                await explode(canvas, row + sprite_rows//2, column + sprite_columns//2)
+                return
             row += speed
             obstacle.row = row
-
     finally:
         obstacles.remove(obstacle)
-        if len(obstacles_in_last_collisions) > 0:
-            obstacles_in_last_collisions.clear()
+        if obstacle in obstacles_in_last_collisions:
+            obstacles_in_last_collisions.remove(obstacle)
 
-
-async def fill_orbit_garbage(canvas, max_column, coroutines):
-    while True:
-        await sleep(random.randint(0, GARBAGE_DELAY))
-        files = os.listdir(GARBAGE_DIRECTORY)
-        garbage_frame = get_garbage_frame(random.choice(files))
-        coroutine_garbage = fly_garbage(canvas, random.randint(0, max_column), garbage_frame)
-        coroutines.append(coroutine_garbage)
-        await sleep(2)
