@@ -9,14 +9,14 @@ from animations.blink import blink
 from animations.fire import fire
 from animations.space_garbage import fly_garbage, obstacles, obstacles_in_last_collisions
 from toolkit.curses_tools import draw_frame, get_frame_size, read_controls
-from toolkit.frames import get_frames, get_game_over_frame, get_garbage_frame, get_frame
+from toolkit.frames import get_frames, get_frame
 from toolkit.game_scenario import get_garbage_delay_tics, PHRASES
 from toolkit.obstacles import show_obstacles
 from toolkit.physics import update_speed
 from toolkit.sleep import sleep
 
 GARBAGE_DIRECTORY = 'frames/garbage/'
-SPACESHIP_FRAMES = get_frames('rocket')
+SPACESHIP_FRAMES = 'frames/rocket'
 GAME_OVER_DIRECTORY = 'frames/game_over/'
 TIC_TIMEOUT = 0.1
 STARS_AMOUNT = 150
@@ -39,11 +39,12 @@ async def show_game_over(canvas):
 
 
 async def animate_spaceship(canvas, max_row, max_column, coroutines, obstacles):
-    frame_height, frame_width = get_frame_size(SPACESHIP_FRAMES[0])
+    spaceship_frames = get_frames(SPACESHIP_FRAMES)
+    frame_height, frame_width = get_frame_size(spaceship_frames[0])
     row = max_row // 2 - frame_height // 2
     column = max_column // 2 - frame_width // 2
     row_speed, column_speed = 0, 0
-    for frame in cycle(SPACESHIP_FRAMES):
+    for frame in cycle(spaceship_frames):
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
