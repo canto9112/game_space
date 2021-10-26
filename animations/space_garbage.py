@@ -1,14 +1,8 @@
 import asyncio
-import os
-import random
 
 from animations.explosion import explode
 from toolkit.curses_tools import draw_frame, get_frame_size
-from toolkit.frames import get_garbage_frame
-from toolkit.game_scenario import get_garbage_delay_tics
 from toolkit.obstacles import Obstacle
-from toolkit.sleep import sleep
-
 
 GARBAGE_DIRECTORY = 'frames/garbage/'
 
