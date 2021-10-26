@@ -89,10 +89,9 @@ async def fill_orbit_garbage(canvas, max_column):
         garbage_delay_tics = get_garbage_delay_tics(YEAR)
         files = os.listdir(GARBAGE_DIRECTORY)
         garbage_frame = get_frame(GARBAGE_DIRECTORY, random.choice(files))
-        # garbage_frame = get_garbage_frame(random.choice(files))
         coroutine_garbage = fly_garbage(canvas, random.randint(0, max_column), garbage_frame)
         COROUTINES.append(coroutine_garbage)
-        await sleep(garbage_delay_tics)# увеличение числа мусора
+        await sleep(garbage_delay_tics)
 
 
 def draw(canvas):
@@ -109,10 +108,12 @@ def draw(canvas):
     COROUTINES.extend(
         blink(canvas, random.randint(0, max_row), random.randint(0, max_column), random.choice(STARS_SYMBOLS)) for _ in
         range(STARS_AMOUNT))
-    COROUTINES.append(animate_spaceship(canvas, max_row, max_column, COROUTINES, obstacles))
-    COROUTINES.append(fire(canvas, row_center, column_center, obstacles))
-    COROUTINES.append(count_years(canvas.derwin(max_row // 3, max_column // 3)))
-    COROUTINES.append(fill_orbit_garbage(canvas, max_column))
+    COROUTINES.extend([
+        animate_spaceship(canvas, max_row, max_column, COROUTINES, obstacles),
+        fire(canvas, row_center, column_center, obstacles),
+        count_years(canvas.derwin(max_row // 3, max_column // 3)),
+        fill_orbit_garbage(canvas, max_column)
+    ])
 
     if DEBUG:
         COROUTINES.append(show_obstacles(canvas, obstacles))
