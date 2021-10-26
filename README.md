@@ -25,6 +25,7 @@
 
 Чтобы было совсем антаружно, на экране могут появляться надписи — чем примечателен этот год.
 
+![Sample](https://media2.giphy.com/media/Hug6gNQHtmwhIcVOoX/giphy.gif?cid=790b761181073db76b1257fc0c2bdb54cf560af1f1234bc8&rid=giphy.gif&ct=g)
 
 Управление ракетой:
 * двигаться вверх - стрелка вверх;
