@@ -9,7 +9,7 @@ from animations.blink import blink
 from animations.fire import fire
 from animations.space_garbage import fly_garbage, obstacles, obstacles_in_last_collisions
 from toolkit.curses_tools import draw_frame, get_frame_size, read_controls
-from toolkit.frames import get_frames, get_game_over_frame, get_garbage_frame
+from toolkit.frames import get_frames, get_game_over_frame, get_garbage_frame, get_frame
 from toolkit.game_scenario import get_garbage_delay_tics, PHRASES
 from toolkit.obstacles import show_obstacles
 from toolkit.physics import update_speed
@@ -30,11 +30,11 @@ DEBUG = False
 
 async def show_game_over(canvas):
     rows, columns = canvas.getmaxyx()
-    files = os.listdir(GAME_OVER_DIRECTORY)
-    garbage_frame = get_game_over_frame(files[0])
-    frame_rows, frame_columns = get_frame_size(garbage_frame)
+    file = os.listdir(GAME_OVER_DIRECTORY)
+    game_over_frame = get_frame(GAME_OVER_DIRECTORY, file[0])
+    frame_rows, frame_columns = get_frame_size(game_over_frame)
     while True:
-        draw_frame(canvas, (rows - frame_rows) / 2, (columns - frame_columns) / 2, garbage_frame)
+        draw_frame(canvas, (rows - frame_rows) / 2, (columns - frame_columns) / 2, game_over_frame)
         await sleep(1)
 
 
@@ -87,7 +87,8 @@ async def fill_orbit_garbage(canvas, max_column):
     while True:
         garbage_delay_tics = get_garbage_delay_tics(YEAR)
         files = os.listdir(GARBAGE_DIRECTORY)
-        garbage_frame = get_garbage_frame(random.choice(files))
+        garbage_frame = get_frame(GARBAGE_DIRECTORY, random.choice(files))
+        # garbage_frame = get_garbage_frame(random.choice(files))
         coroutine_garbage = fly_garbage(canvas, random.randint(0, max_column), garbage_frame)
         COROUTINES.append(coroutine_garbage)
         await sleep(garbage_delay_tics)# увеличение числа мусора
