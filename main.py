@@ -9,7 +9,7 @@ from animations.blink import blink
 from animations.fire import fire
 from animations.space_garbage import fly_garbage, obstacles, obstacles_in_last_collisions
 from toolkit.curses_tools import draw_frame, get_frame_size, read_controls
-from toolkit.frames import get_frames, get_gameover_frame, get_garbage_frame
+from toolkit.frames import get_frames, get_game_over_frame, get_garbage_frame
 from toolkit.game_scenario import get_garbage_delay_tics, PHRASES
 from toolkit.obstacles import show_obstacles
 from toolkit.physics import update_speed
@@ -17,7 +17,7 @@ from toolkit.sleep import sleep
 
 GARBAGE_DIRECTORY = 'frames/garbage/'
 SPACESHIP_FRAMES = get_frames('rocket')
-GAME_OVER_DIRECTORY = 'frames/gameover/'
+GAME_OVER_DIRECTORY = 'frames/game_over/'
 TIC_TIMEOUT = 0.1
 STARS_AMOUNT = 150
 STARS_SYMBOLS = '+*.:'
@@ -28,10 +28,10 @@ WEAPON_PERMIT_YEAR = 2020
 DEBUG = False
 
 
-async def show_gameover(canvas):
+async def show_game_over(canvas):
     rows, columns = canvas.getmaxyx()
     files = os.listdir(GAME_OVER_DIRECTORY)
-    garbage_frame = get_gameover_frame(files[0])
+    garbage_frame = get_game_over_frame(files[0])
     frame_rows, frame_columns = get_frame_size(garbage_frame)
     while True:
         draw_frame(canvas, (rows - frame_rows) / 2, (columns - frame_columns) / 2, garbage_frame)
@@ -53,7 +53,7 @@ async def animate_spaceship(canvas, max_row, max_column, coroutines, obstacles):
         for obstacle in obstacles:
             if obstacle.has_collision(row, column, frame_height, frame_width):
                 obstacles_in_last_collisions.append(obstacle)
-                coroutines.append(show_gameover(canvas))
+                coroutines.append(show_game_over(canvas))
                 return
 
         row = row + rows_direction + row_speed

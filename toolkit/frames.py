@@ -15,7 +15,7 @@ def get_garbage_frame(garbage):
     return frame
 
 
-def get_gameover_frame(garbage):
-    with open(f'frames/gameover/{garbage}', "r") as garbage_file:
+def get_game_over_frame(garbage):
+    with open(f'frames/game_over/{garbage}', "r") as garbage_file:
         frame = garbage_file.read()
     return frame
