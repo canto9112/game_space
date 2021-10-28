@@ -22,7 +22,6 @@ TIC_TIMEOUT = 0.1
 STARS_AMOUNT = 150
 STARS_SYMBOLS = '+*.:'
 COROUTINES = []
-GARBAGE_AMOUNT = 3
 YEAR = 1957
 WEAPON_PERMIT_YEAR = 2020
 DEBUG = False
@@ -44,12 +43,25 @@ async def animate_spaceship(canvas, max_row, max_column, coroutines, obstacles):
     row = max_row // 2 - frame_height // 2
     column = max_column // 2 - frame_width // 2
     row_speed, column_speed = 0, 0
+    border_size = 1
     for frame in cycle(spaceship_frames):
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
         draw_frame(canvas, row, column, frame, negative=True)
+
         row_speed, column_speed = update_speed(row_speed, column_speed, rows_direction, columns_direction)
+
+        if row_speed >= 0:
+            row = min(row + row_speed, max_row - frame_height - border_size)
+        else:
+            row = max(row + row_speed, border_size)
+            column = min(column + column_speed, max_column - frame_width - border_size)
+
+        if column_speed > 0:
+            column = min(column + column_speed, max_column - frame_width - border_size)
+        else:
+            column = max(column + column_speed, border_size)
 
         for obstacle in obstacles:
             if obstacle.has_collision(row, column, frame_height, frame_width):
@@ -57,19 +69,8 @@ async def animate_spaceship(canvas, max_row, max_column, coroutines, obstacles):
                 coroutines.append(show_game_over(canvas))
                 return
 
-        row = row + rows_direction + row_speed
-        if row == max_row - frame_height:
-            row = row - 1
-        elif row == 1:
-            row = row + 1
-        column = column + columns_direction + column_speed
-        if column == max_column - frame_width:
-            column = column - 1
-        elif column == 1:
-            column = column + 1
-
         if space_pressed and YEAR >= WEAPON_PERMIT_YEAR:
-            coroutines.append(fire(canvas, row, column+2, obstacles))
+            coroutines.append(fire(canvas, row, column + 2, obstacles))
 
 
 async def count_years(canvas):
